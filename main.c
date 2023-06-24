@@ -2,33 +2,43 @@
 
 /**
  * main - entry point
- * @argc: is an int
- * @argv: is a char
- * @environ: global variable
- * Return: 0
+ * @ac: arg count
+ * @av: arg vector
+ *
+ * Return: 0 on success, 1 on error
  */
-
-int main(int argc, char **argv, char **environ)
+int main(int ac, char **av)
 {
-	char *line = NULL;
-	char *delim = "\t \a\n";
-	char *command;
-	char **tokens;
-	(void)argc;
+	info_t info[] = { INFO_INIT };
+	int fd = 2;
 
-	tokens = find_path(environ);
+	asm ("mov %1, %0\n\t"
+		"add $3, %0"
+		: "=r" (fd)
+		: "r" (fd));
 
-	signal(SIGINT, SIG_IGN);
-	while (1)
+	if (ac == 2)
 	{
-		line = read_line();
-		argv = splits(line, delim);
-		command = args_path(argv, tokens);
-		if (command == NULL)
-			execute(argv);
-		free(line);
-		free(argv);
-		free(command);
+		fd = open(av[1], O_RDONLY);
+		if (fd == -1)
+		{
+			if (errno == EACCES)
+				exit(126);
+			if (errno == ENOENT)
+			{
+				_eputs(av[0]);
+				_eputs(": 0: Can't open ");
+				_eputs(av[1]);
+				_eputchar('\n');
+				_eputchar(BUF_FLUSH);
+				exit(127);
+			}
+			return (EXIT_FAILURE);
+		}
+		info->readfd = fd;
 	}
-	return (0);
+	populate_env_list(info);
+	read_history(info);
+	hsh(info, av);
+	return (EXIT_SUCCESS);
 }
