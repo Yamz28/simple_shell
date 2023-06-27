@@ -1,0 +1,13 @@
+#!/bin/bash
+
+while true; do
+    read -p "Shell> " command
+
+    # Check for built-in commands
+    if [[ "$command" == "exit" ]]; then
+        exit 0
+    fi
+
+    # Execute the command
+    eval "$command"
+done

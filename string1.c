@@ -9,16 +9,16 @@
  */
 char *_strcpy(char *dest, char *src)
 {
-	int itr = 0;
+	int i = 0;
 
 	if (dest == src || src == 0)
 		return (dest);
-	while (src[itr])
+	while (src[i])
 	{
-		dest[itr] = src[itr];
+		dest[i] = src[i];
 		i++;
 	}
-	dest[itr] = 0;
+	dest[i] = 0;
 	return (dest);
 }
 
@@ -46,8 +46,8 @@ char *_strdup(const char *str)
 }
 
 /**
- *_puts - prints an input string
- *@str: the string to be printed
+ * _puts - prints an input string
+ * @str: the string to be printed
  *
  * Return: Nothing
  */
@@ -85,4 +85,3 @@ int _putchar(char c)
 		buf[i++] = c;
 	return (1);
 }
-
